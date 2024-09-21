@@ -2,7 +2,8 @@ import pyxel
 from .observer import Observer
 
 from .fade import Fade
-from .convert_timeformat import ConvertTimeFormat
+from .sound_fade import SoundFade
+from .show_results import ShowResults
 
 
 class Ending(Observer):
@@ -11,17 +12,20 @@ class Ending(Observer):
             self.reset()
             
     def reset(self):
+        
         self.timer = 0  # エンディング用カウンター
-        self.dx = pyxel.width  # X移動計算用
-        self.dy = pyxel.height  # Y移動計算用
+        self.dx = pyxel.width + 120  # X移動計算用
+        self.dy = pyxel.height - 20  # Y移動計算用
         self.start = 100  # 演出タイミング
 
         self.sun_rotation = 0  # 太陽自転用カウンター
         self.goto_title = False  # タイトル移行フラグ
 
         # フェード処理
-        self.fadein = Fade()
-        self.fadeout = Fade()
+        self.fade_in = Fade()
+        self.fade_out = Fade()
+        
+        self.show_results = ShowResults(self.scene_manager)
 
         # 太陽
         self.sun_x = 140  # 太陽移動用
@@ -49,12 +53,12 @@ class Ending(Observer):
             self.dx *= 0.9
             self.dy *= 0.9
 
-        if self.timer >= self.start + 100:
+        if self.timer >= self.start + 460:
             if pyxel.btnp(pyxel.KEY_SPACE) or pyxel.btnp(pyxel.GAMEPAD1_BUTTON_A) or pyxel.btnp(pyxel.KEY_Z):
                 self.goto_title = True
 
         if self.goto_title:
-            if self.fadeout.fade_out():
+            if self.fade_out.fade_out():
                 self.scene_manager.scene = 0
 
         self.sun_plate.cls(0)
@@ -79,10 +83,13 @@ class Ending(Observer):
                 else:
                     col = 10
                 self.sun_plate.pset(nx + x, ny + y, col)
+                
+        if self.timer >= self.start + 100:
+            self.show_results.update()
 
     def draw(self):
         pyxel.cls(0)
-        self.fadein.fade_in()
+        self.fade_in.fade_in()
 
         for star in self.star:
             pyxel.pset(star[0], star[1], star[2][pyxel.rndi(0, len(star[2]) - 1)])
@@ -148,10 +155,13 @@ class Ending(Observer):
                 7,
             )
             pyxel.pset(sx, sy, 12)
-
+        if self.timer == self.start + 140:
+            pyxel.play(0, 9)
+        
         if self.timer >= self.start + 140:
             # ブースター
-            x, y = [self.dx + 40, self.dy + 70 + pyxel.sin(self.timer * 2) * 2]
+            # x, y = [self.dx + 40, self.dy + 70 + pyxel.sin(self.timer * 2) * 2]
+            x, y = [self.dx - 140, self.dy - 30 + pyxel.sin(self.timer * 2) * 6]
             pyxel.circ(x + 76, y + 56, pyxel.rndi(10, 12), 9)
             pyxel.circ(x + 76, y + 56, pyxel.rndi(8, 10), 10)
             pyxel.circ(x + 76, y + 56, pyxel.rndi(7, 8), 7)
@@ -161,35 +171,18 @@ class Ending(Observer):
             # 自機
             pyxel.blt(x, y, 0, 48, 112, 112, 64, 3, 0, 1)
 
-        if self.timer >= self.start + 200:
-            pyxel.text(
-                30,
-                20,
-                "TIME: "
-                + str(
-                    ConvertTimeFormat.convert_to_minutes_seconds_milliseconds(
-                        self.scene_manager.play_time
-                    )
-                ),
-                7,
-            )
+        if self.timer >= self.start + 100:
+            self.show_results.draw()
 
-        if self.timer >= self.start + 240:
+        if self.timer >= self.start + 460:
+            x = 60
             pyxel.text(
-                40, 30, "DAMAGE: " + str(self.scene_manager.damages) + " times", 7
-            )
-
-        if self.timer >= self.start + 280:
-            pyxel.text(50, 40, "GOT ENERGIES: " + str(self.scene_manager.energies), 7)
-
-        if self.timer >= self.start + 360:
-            pyxel.text(
-                30,
-                pyxel.height - 30,
+                x,
+                pyxel.height - 40,
                 "THANK YOU for PLAYING!",
                 [2, 12, 6, 7, 8, 10][pyxel.rndi(0, 5)],
             )
-            pyxel.text(30, pyxel.height - 20, "PRESS Z or SPACE KEY or TRIGGER A", 12, self.scene_manager.jafont)
+            pyxel.text(x, pyxel.height - 30, "PRESS Z or SPACE KEY or TRIGGER A", 7, self.scene_manager.jafont)
 
     def repeat_scroll(self, x, y, u, v, w, h, target):
         # 無限スクロール
