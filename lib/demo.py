@@ -224,7 +224,8 @@ class Demo(Observer):
     
     def make_noise(self, timer:float):
         offscreen = self.offscreen.data_ptr()
-        for idx, data in enumerate(offscreen):
+        for idx in range(0, len(offscreen), 3):
+            data = offscreen[idx]
             data = data + pyxel.rndi(0, data + int(timer))
             offscreen[idx] = data
         # dequeに変換
