@@ -2,10 +2,10 @@ import pyxel
 
 class SceneManager:
     def __init__(self):
-        self.jafont = pyxel.Font("./assets/misaki_gothic.bdf")
+        self.jafont = pyxel.Font("./assets/misaki_gothic_2nd.bdf")
         self._scene: int = 4  # シーン番号を管理
         self.status_height = 24 # ステータス表示の高さ
-        self.distance = 60 * 100 # マップの長さ
+        self.distance = 60 * 200 # マップの長さ
         self.max_shield: int = 12 # シールドの最大値
         self.reset()
         self.observers = [] # オブザーバーを保持するリスト
@@ -17,7 +17,7 @@ class SceneManager:
     @scene.setter
     def scene(self, value):
         self._scene = value
-        print(f"Sceneが {value} に変更されました")
+        # print(f"Sceneが {value} に変更されました")
         self.notify_observers() # シーンが変更されたらオブザーバーに通知
 
     def add_observer(self, observer):
