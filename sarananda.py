@@ -43,7 +43,7 @@ class App:
         
         for ch, sound in enumerate(self.music):
             set_channel = ch + 16
-            pyxel.sound(set_channel).set(*sound)
+            pyxel.sounds[set_channel].set(*sound)
 
         pyxel.run(self.update, self.draw)
 
