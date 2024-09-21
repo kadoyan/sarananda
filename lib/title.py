@@ -43,7 +43,7 @@ class Title(Observer):
             self.reset()
 
     def reset(self):
-        print("タイトルリセット")
+        # print("タイトルリセット")
         pyxel.pal()
         pyxel.load("./assets/sarananda.pyxres")
 
@@ -142,17 +142,16 @@ class Title(Observer):
                 pyxel.blt(LOGO_MARGIN_X + 112, 16, 0, 128, 48, 48, 16, 0)
             if self.timer > 60:
                 pyxel.text(
-                    LOGO_MARGIN_X,
+                    LOGO_MARGIN_X + 2,
                     120,
                     'BASED ON THE MSX-FAN READER\'S SUBMISSION\nBASIC PROGRAM "SARANANDA."',
                     12,
                 )
                 pyxel.text(
-                    LOGO_MARGIN_X + 60,
+                    LOGO_MARGIN_X + 5,
                     170,
-                    "2024 KADOYAN",
-                    6,
-                    self.scene_manager.jafont,
+                    "2024 KADOYAN / SPECIAL THANKS:frenchbread",
+                    6
                 )
                 if self.timer % 24 > 0:
                     pyxel.pal(15, 10)
@@ -164,7 +163,7 @@ class Title(Observer):
                 pyxel.pal(15, 10)
             if self.timer & 120 > 60:
                 pyxel.text(
-                    LOGO_MARGIN_X,
+                    LOGO_MARGIN_X + 2,
                     140,
                     "PRESS Z or SPACE KEY or TRIGGER A to START",
                     7,
