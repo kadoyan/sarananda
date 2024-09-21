@@ -18,7 +18,7 @@ class GameCore(Observer):
             self.reset()
             
     def reset(self):
-        print("ゲームコアリセット")
+        # print("ゲームコアリセット")
         # ゲーム画面高さ
         self.game_height = pyxel.height - self.scene_manager.status_height
 
